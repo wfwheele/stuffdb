@@ -16,6 +16,8 @@ Version 0.01
 
 our $VERSION = '0.01';
 
+use Getopt::Long;
+use Pod::Usage;
 
 =head1 SYNOPSIS
 
@@ -23,11 +25,36 @@ Quick summary of what the module does.
 
 =head1 SUBROUTINES/METHODS
 
-=head2 function1
+=cut
+
+sub _process_command_line {
+
+}
+
+sub _read_config_from_file {
+
+}
+
+sub _process_repeatable_config {
+	
+}
+
+=head2 run
+
+equivalent to running F<stuffdb>.
 
 =cut
 
 sub run {
+    my $self   = shift;
+    my %config = $self->_process_command_line();
+    %config = $self->_read_config_from_file(%config);
+    %config = $self->_process_repeatable_config(%config);
+
+    $self->create_schemas( $config->{schemas} );
+    $self->run_commands( $config->{commands} );
+
+    return 1;
 }
 
 =head1 AUTHOR
@@ -119,4 +146,4 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =cut
 
-1; # End of StuffDB
+1;    # End of StuffDB
