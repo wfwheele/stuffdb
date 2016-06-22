@@ -75,10 +75,6 @@ sub _read_config_from_file {
     return (%config_from_file, %config);
 }
 
-sub _process_repeatable_config {
-
-}
-
 =head2 run
 
 equivalent to running F<stuffdb>.
@@ -89,7 +85,6 @@ sub run {
     my $self   = shift;
     my %config = $self->_process_command_line();
     %config = $self->_read_config_from_file(%config);
-    %config = $self->_process_repeatable_config(%config);
 
     $self->create_schemas( $config->{schemas} );
     $self->run_commands( $config->{commands} );
