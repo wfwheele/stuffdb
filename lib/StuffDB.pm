@@ -16,6 +16,7 @@ Version 0.01
 
 our $VERSION = '0.01';
 
+use Carp;
 use Getopt::Long;
 use Pod::Usage;
 
@@ -28,7 +29,25 @@ Quick summary of what the module does.
 =cut
 
 sub _process_command_line {
+    my $self   = shift;
+    my %config = ();
+    return %config if not @ARGV;
 
+    GetOptions(
+        'config=s'      => \$config{config},
+        'setup_cmds=s@' => \$config{setup_cmds},
+        'schemas=s@'    => \$config{schemas},
+        'help'          => sub { pod2usage(1) },
+    ) or pod2usage(2);
+
+    if (@ARGV) {
+        pod2usage(
+            -msg     => "unparseable arguments received: " . join( ',', @ARGV ),
+            -exitval => 2,
+        );
+    }
+
+    return %config;
 }
 
 sub _read_config_from_file {
@@ -36,7 +55,7 @@ sub _read_config_from_file {
 }
 
 sub _process_repeatable_config {
-	
+
 }
 
 =head2 run
