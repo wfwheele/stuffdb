@@ -21,32 +21,13 @@ our $VERSION = '0.01';
 
 Quick summary of what the module does.
 
-Perhaps a little code snippet.
-
-    use StuffDB;
-
-    my $foo = StuffDB->new();
-    ...
-
-=head1 EXPORT
-
-A list of functions that can be exported.  You can delete this section
-if you don't export anything, such as for a purely object-oriented module.
-
 =head1 SUBROUTINES/METHODS
 
 =head2 function1
 
 =cut
 
-sub function1 {
-}
-
-=head2 function2
-
-=cut
-
-sub function2 {
+sub run {
 }
 
 =head1 AUTHOR
