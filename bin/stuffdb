@@ -1,0 +1,28 @@
+#!/usr/bin/perl -w
+
+=head1
+
+stuffdb - populates an empty db with schemas, tables, and data
+
+=cut
+
+use strict;
+use warnings;
+
+use StuffDB;
+
+StuffDB->run;
+
+=head1 SYNOPSIS
+
+stuffdb [options]
+
+Options:
+
+	--config 				Path to config file if not in current directory (optional)
+	--schema 				Schema to create (optional, repeatable)
+	--setup_cmd 		Command to run to help setup db, scripts will be run in order
+									given (optional, repeatable)
+	--help					Show this message
+
+=cut
