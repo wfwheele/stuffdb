@@ -16,9 +16,10 @@ Version 0.01
 
 our $VERSION = '0.01';
 
-use Carp;
+use Carp qw/croak/;
 use Getopt::Long;
 use Pod::Usage;
+use File::Slurp;
 
 =head1 SYNOPSIS
 
@@ -51,7 +52,27 @@ sub _process_command_line {
 }
 
 sub _read_config_from_file {
+    my ( $self, %config ) = @_;
 
+    my $config_file
+        = exists $config{config} ? $config{config} : $self->_find_config_file();
+
+    croak 'no config file specified or found' if not $config_file;
+
+    my %config_from_file;
+    my $file_contents = load_file $config_file;
+
+    if ( $config_file =~ /\.ya?ml$/mx ) {
+        require YAML::XS;
+        %config_from_file = %{ YAML::XS::Load($file_contents) };
+    }
+    elsif ( $config_file =~ /\.json$/mx ) {
+        require JSON::XS;
+        %config_from_file = %{ JSON::XS::decode_json($file_contents) };
+    }
+
+		#merge the two hashes preferring what came from the command line
+    return (%config_from_file, %config);
 }
 
 sub _process_repeatable_config {
