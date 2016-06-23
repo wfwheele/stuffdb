@@ -30,7 +30,23 @@ Quick summary of what the module does.
 =cut
 
 sub _find_config_file {
+    my $self = shift;
+    my $dir  = '.';
+    opendir my $dh, $dir or croak "Could not open current directory: $!";
 
+    my @dir_contents = readdir $dh;
+
+    my $conf_file;
+FILE: for my $file (@dir_contents) {
+        if ( $file =~ /stuffdb \. ( ya?ml | json )/mx ) {
+            $conf_file = $file;
+            last FILE;
+        }
+    }
+
+    closedir $dh;
+
+    return $conf_file;
 }
 
 sub _process_command_line {
@@ -75,7 +91,7 @@ sub _read_config_from_file {
         %config_from_file = %{ JSON::XS::decode_json($file_contents) };
     }
 
-		#merge the two hashes preferring what came in as a parameter
+    #merge the two hashes preferring what came in as a parameter
     return ( %config_from_file, %config );
 }
 
