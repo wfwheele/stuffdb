@@ -30,6 +30,48 @@ subtest 'json' => sub {
     unlink('stuffdb.json');
     $mock_module->unmock_all();
 };
+
+subtest 'yaml' => sub {
+    my $stuffdb = 'StuffDB';
+    my $method  = '_read_config_from_file';
+
+    my $mock_module = Test::MockModule->new($stuffdb);
+    $mock_module->mock( '_find_config_file', sub { return 'stuffdb.yaml' } );
+
+    my $config = {
+        schemas => [ 'foo', 'bar' ],
+        scripts => ['do_something.sh'],
+    };
+
+    write_file( 'stuffdb.yaml', Dump($config) );
+    my %config = $stuffdb->$method();
+    is_deeply(
+        \%config,
+        {   schemas => [ 'foo', 'bar' ],
+            scripts => ['do_something.sh'],
+        },
+        'correct reads and decode yaml config'
+    );
+
+    unlink('stuffdb.yaml');
+
+    $mock_module->mock( '_find_config_file', sub { return 'stuffdb.yml' } );
+
+    write_file( 'stuffdb.yml', Dump($config) );
+
+    %config = $stuffdb->$method();
+    is_deeply(
+        \%config,
+        {   schemas => [ 'foo', 'bar' ],
+            scripts => ['do_something.sh'],
+        },
+        'correct reads and decode yml config'
+    );
+
+    unlink('stuffdb.yml');
+    $mock_module->unmock_all();
+};
+
 subtest 'prefer_input_config' => sub {
     my $stuffdb = 'StuffDB';
     my $method  = '_read_config_from_file';
