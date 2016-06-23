@@ -12,8 +12,13 @@ WriteMakefile(
     PL_FILES           => {},
     MIN_PERL_VERSION   => 5.006,
     CONFIGURE_REQUIRES => { 'ExtUtils::MakeMaker' => 0, },
-    BUILD_REQUIRES     => { 'Test::More' => 0, },
-    PREREQ_PM          => {
+    BUILD_REQUIRES     => {
+        'Test::More'  => 0,
+        'JSON::XS'    => 3.02,
+        'YAML::XS'    => 0.62,
+        'File::Slurp' => 9999.0,
+    },
+    PREREQ_PM => {
 
         #'ABC'              => 1.6,
         #'Foo::Bar::Module' => 5.0401,
