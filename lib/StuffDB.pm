@@ -75,8 +75,8 @@ sub _read_config_from_file {
         %config_from_file = %{ JSON::XS::decode_json($file_contents) };
     }
 
-		#merge the two hashes preferring what came from the command line
-    return (%config_from_file, %config);
+		#merge the two hashes preferring what came in as a parameter
+    return ( %config_from_file, %config );
 }
 
 =head2 run
@@ -185,4 +185,4 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =cut
 
-1;    # End of StuffDB
+__PACKAGE__;    # End of StuffDB
