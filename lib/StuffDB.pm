@@ -64,7 +64,7 @@ sub _read_config_from_file {
     croak 'no config file specified or found' if not $config_file;
 
     my %config_from_file;
-    my $file_contents = load_file $config_file;
+    my $file_contents = read_file $config_file;
 
     if ( $config_file =~ /\.ya?ml$/mx ) {
         require YAML::XS;
