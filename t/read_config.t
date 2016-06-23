@@ -2,7 +2,6 @@ use strict;
 use warnings;
 use Test::More;
 use Test::MockModule;
-use Data::Dumper;
 use File::Slurp;
 use JSON::XS;
 use YAML::XS;
@@ -101,4 +100,41 @@ subtest 'prefer_input_config' => sub {
     $mock_module->unmock_all();
 };
 
+subtest '_find_config_file' => sub {
+    my $stuffdb = 'StuffDB';
+    my $method  = '_find_config_file';
+
+    for my $expected_file (qw/stuffdb.json stuffdb.yaml stuffdb.yml/) {
+
+        touch($expected_file);
+
+        my $conf_file = $stuffdb->$method();
+        is( $conf_file, $expected_file, "found $expected_file" );
+
+        unlink($expected_file);
+
+    }
+
+    my $file = $stuffdb->$method();
+    ok( !$file, 'falsey value return when no file found' );
+
+    for my $other_file (qw/other.json other.yaml other.yml/) {
+        touch($other_file);
+
+        $file = $stuffdb->$method();
+        ok( !$file, 'does not find json or yaml files not named stuffdb' );
+
+        unlink($other_file);
+    }
+
+};
+
 done_testing();
+
+sub touch {
+    my $filename = shift;
+
+    open( my $fh, '>', $filename ) or die "Could not open file '$filename' $!";
+    close $fh;
+    return;
+}
