@@ -29,6 +29,10 @@ Quick summary of what the module does.
 
 =cut
 
+sub _find_config_file {
+
+}
+
 sub _process_command_line {
     my $self   = shift;
     my %config = ();
