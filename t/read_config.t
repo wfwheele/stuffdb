@@ -30,4 +30,33 @@ subtest 'json' => sub {
     unlink('stuffdb.json');
     $mock_module->unmock_all();
 };
+subtest 'prefer_input_config' => sub {
+    my $stuffdb = 'StuffDB';
+    my $method  = '_read_config_from_file';
+
+    my $mock_module = Test::MockModule->new($stuffdb);
+    $mock_module->mock( '_find_config_file', sub { return 'stuffdb.json' } );
+
+    my $config = {
+        schemas => [ 'foo', 'bar' ],
+        scripts => ['do_something.sh'],
+    };
+
+    #write json config File
+    write_file( 'stuffdb.json', encode_json($config) );
+
+    my %prev_config = ( schemas => ['foo'] );
+    my %config = $stuffdb->$method(%prev_config);
+
+    is_deeply(
+        \%config,
+        { schemas => ['foo'], scripts => ['do_something.sh'] },
+        'input config overrides config from file'
+    );
+
+    #remove created config file
+    unlink('stuffdb.json');
+    $mock_module->unmock_all();
+};
+
 done_testing();
