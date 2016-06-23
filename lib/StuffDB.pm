@@ -86,8 +86,8 @@ sub run {
     my %config = $self->_process_command_line();
     %config = $self->_read_config_from_file(%config);
 
-    $self->create_schemas( $config->{schemas} );
-    $self->run_commands( $config->{commands} );
+    $self->create_schemas( $config{schemas} );
+    $self->run_commands( $config{commands} );
 
     return 1;
 }
