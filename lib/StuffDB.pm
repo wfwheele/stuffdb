@@ -21,6 +21,8 @@ use Getopt::Long;
 use Pod::Usage;
 use File::Slurp;
 use DBI;
+use feature qw/say/;
+use IPC::Cmd;
 
 =head1 SYNOPSIS
 
@@ -118,8 +120,24 @@ sub create_schemas {
     return;
 }
 
+sub execute_command {
+    my ( $self, $command_ref ) = @_;
+
+    my ( $success, $error_message, $full_buf, $stdout_buf, $stderr_buf )
+        = IPC::Cmd::run( command => $command_ref, verbose => 0 );
+
+    croak "Failed to run ", join( ' ', @$command_ref ), ":\n ", $error_message
+        unless $success;
+
+    return;
+}
+
 sub run_commands {
-    my ($self) = @_;
+    my ( $self, $commands_ref ) = @_;
+    for my $command ( @{$commands_ref} ) {
+        $self->execute_command($command);
+    }
+    return;
 }
 
 =head2 run
