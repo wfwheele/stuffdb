@@ -20,6 +20,7 @@ use Carp qw/croak/;
 use Getopt::Long;
 use Pod::Usage;
 use File::Slurp;
+use DBI;
 
 =head1 SYNOPSIS
 
@@ -93,6 +94,32 @@ sub _read_config_from_file {
 
     #merge the two hashes preferring what came in as a parameter
     return ( %config_from_file, %config );
+}
+
+sub _db_connection {
+    my $self = shift;
+    my %connect_options = ( AutoCommit => 0, PrintError => 0 );
+    my $dbh = DBI->connect_cached( "dbi:Oracle:host=ora_test;port=1521;sid=xe",
+        "system", "oracle", \%connect_options )
+        or croak $DBI::errstr;
+    return $dbh;
+}
+
+sub create_schemas {
+    my ( $self, $schemas_ref ) = @_;
+    my $dbh = $self->_db_connection();
+    for my $schema ( @{$schemas_ref} ) {
+        my $create_user_sql = qq{create user $schema identified externally};
+        my $grant_tablespace_sql = qq{grant unlimited tablespace to $schema};
+        $dbh->do($create_user_sql);
+        $dbh->do($grant_tablespace_sql);
+    }
+    $dbh->commit() or $dbh->rollback();
+    return;
+}
+
+sub run_commands {
+    my ($self) = @_;
 }
 
 =head2 run
