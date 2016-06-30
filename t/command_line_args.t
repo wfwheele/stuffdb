@@ -12,17 +12,17 @@ my %got = $module->$method();
 is_deeply( \%got, {}, 'no args returns empty hash' );
 
 @ARGV = (
-    "--config",     "foobar", "--schemas",    "foo",
-    "--schemas",    "bar",    "--setup_cmds", 'echo stuff',
-    "--setup_cmds", 'echo foo',
+    "--config",   "foobar", "--schemas",  "foo",
+    "--schemas",  "bar",    "--commands", 'echo stuff',
+    "--commands", 'echo foo',
 );
 
 %got = $module->$method();
 is_deeply(
     \%got,
-    {   config     => 'foobar',
-        schemas    => [ 'foo', 'bar' ],
-        setup_cmds => [ [ 'echo', 'stuff' ], [ 'echo', 'foo' ] ]
+    {   config   => 'foobar',
+        schemas  => [ 'foo', 'bar' ],
+        commands => [ [ 'echo', 'stuff' ], [ 'echo', 'foo' ] ]
     }
 );
 

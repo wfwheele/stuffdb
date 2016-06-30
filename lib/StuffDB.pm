@@ -59,17 +59,17 @@ sub _process_command_line {
 
     GetOptions(
         'config=s'      => \$config{config},
-        'setup_cmds=s@' => \$config{setup_cmds},
+        'commands=s@' => \$config{commands},
         'schemas=s@'    => \$config{schemas},
         'help'          => sub { pod2usage(1) },
     ) or pod2usage(2);
 
     my @parsed_cmds = ();
-    for my $cmd_string ( @{ $config{setup_cmds} } ) {
+    for my $cmd_string ( @{ $config{commands} } ) {
         my @parsed_cmd = split / /, $cmd_string;
         push @parsed_cmds, \@parsed_cmd;
     }
-		$config{setup_cmds} = \@parsed_cmds;
+		$config{commands} = \@parsed_cmds;
 
     return %config;
 }
