@@ -64,12 +64,12 @@ sub _process_command_line {
         'help'          => sub { pod2usage(1) },
     ) or pod2usage(2);
 
-    if (@ARGV) {
-        pod2usage(
-            -msg     => "unparseable arguments received: " . join( ',', @ARGV ),
-            -exitval => 2,
-        );
+    my @parsed_cmds = ();
+    for my $cmd_string ( @{ $config{setup_cmds} } ) {
+        my @parsed_cmd = split / /, $cmd_string;
+        push @parsed_cmds, \@parsed_cmd;
     }
+		$config{setup_cmds} = \@parsed_cmds;
 
     return %config;
 }
