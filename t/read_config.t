@@ -2,11 +2,14 @@ use strict;
 use warnings;
 use Test::More;
 use Test::MockModule;
+use Test::Exception;
 use File::Slurp;
 use JSON::XS;
 use YAML::XS;
 
 BEGIN { use_ok('StuffDB') or BAIL_OUT('cannot use StuffDB') }
+
+my $module = 'StuffDB';
 
 subtest 'json' => sub {
     my $stuffdb = 'StuffDB';
@@ -24,6 +27,10 @@ subtest 'json' => sub {
 
     my %config = $stuffdb->$method();
     is_deeply( \%config, $config, 'read config from default json file' );
+
+    %config = $stuffdb->$method( config => 'stuffdb.json' );
+    $config->{config} = 'stuffdb.json';
+    is_deeply( \%config, $config, 'read config from specified json file' );
 
     #remove created config file and other cleanup
     unlink('stuffdb.json');
@@ -127,6 +134,12 @@ subtest '_find_config_file' => sub {
         unlink($other_file);
     }
 
+};
+
+subtest 'fail_cases' => sub {
+    throws_ok { $module->_read_config_from_file(); }
+    qr/no config file specified or found/,
+        'Fails when no config found or specified';
 };
 
 done_testing();
