@@ -3,3 +3,4 @@ COPY . /module
 RUN cpanm /module
 RUN mkdir /stuffdb
 WORKDIR /stuffdb
+ENTRYPOINT ["stuffdb"]
