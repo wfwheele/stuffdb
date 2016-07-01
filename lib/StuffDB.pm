@@ -109,8 +109,9 @@ sub _db_connection {
 
     croak 'missing connection information'
         unless exists $config{connection}
-        and $config{connection}->{host}, $config{connection}->{port}
-        and $config{connection}->{sid};
+        and exists $config{connection}->{host},
+        exists $config{connection}->{port}
+        and exists $config{connection}->{sid};
 
     my $dbh = DBI->connect_cached( "dbi:Oracle:host=$host;port=$port;sid=$sid",
         $ENV{STUFFDB_USER}, $ENV{STUFFDB_PASSWORD}, \%connect_options )
