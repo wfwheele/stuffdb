@@ -6,7 +6,7 @@ use Data::Dumper;
 BEGIN { use_ok('StuffDB') or BAIL_OUT('could use StuffDB'); }
 
 SKIP: {
-    skip 'only run from automated environment'
+    skip 'only run from automated environment', 2
         unless exists $ENV{DBSTUFF_AUTO_TEST};
     for ( 1 .. 2 ) {
         my $stuffdb = 'StuffDB';
