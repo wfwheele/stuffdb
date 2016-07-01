@@ -16,7 +16,7 @@ subtest 'json' => sub {
     my $method  = '_read_config_from_file';
     my $config  = {
         schemas => [ 'foo', 'bar' ],
-        scripts => ['do_something.sh'],
+        scripts => [['echo', 'foo']],
     };
 
     my $mock_module = Test::MockModule->new('StuffDB');
