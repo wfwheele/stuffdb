@@ -19,10 +19,10 @@ stuffdb [options]
 
 Options:
 
-	--config 				Path to config file if not in current directory (optional)
-	--schemas 				Schema to create (optional, repeatable)
-	--setup_cmds		Command to run to help setup db, scripts will be run in order
-									given (optional, repeatable)
-	--help					Show this message
+	--config		Path to config file if not in current directory (optional)
+	--schemas 	Schema to create (optional, repeatable)
+	--commands	Commands to run to help setup db, scripts will be run in order
+								given (optional, repeatable)
+	--help			Show this message
 
 =cut
