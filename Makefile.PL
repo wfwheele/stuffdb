@@ -12,6 +12,7 @@ WriteMakefile(
     PL_FILES           => {},
     MIN_PERL_VERSION   => 5.006,
     CONFIGURE_REQUIRES => { 'ExtUtils::MakeMaker' => 0, },
+    EXE_FILES          => ['bin/stuffdb'],
     BUILD_REQUIRES     => {
         'Test::More'       => 0,
         'JSON::XS'         => 3.02,
