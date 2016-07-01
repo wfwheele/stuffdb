@@ -58,10 +58,10 @@ sub _process_command_line {
     return %config if not @ARGV;
 
     GetOptions(
-        'config=s'      => \$config{config},
+        'config=s'    => \$config{config},
         'commands=s@' => \$config{commands},
-        'schemas=s@'    => \$config{schemas},
-        'help'          => sub { pod2usage(1) },
+        'schemas=s@'  => \$config{schemas},
+        'help'        => sub { pod2usage(1) },
     ) or pod2usage(2);
 
     my @parsed_cmds = ();
@@ -69,7 +69,7 @@ sub _process_command_line {
         my @parsed_cmd = split / /, $cmd_string;
         push @parsed_cmds, \@parsed_cmd;
     }
-		$config{commands} = \@parsed_cmds;
+    $config{commands} = \@parsed_cmds;
 
     return %config;
 }
@@ -99,17 +99,29 @@ sub _read_config_from_file {
 }
 
 sub _db_connection {
-    my $self = shift;
+    my ( $self, %config ) = @_;
     my %connect_options = ( AutoCommit => 0, PrintError => 0 );
-    my $dbh = DBI->connect_cached( "dbi:Oracle:host=ora_test;port=1521;sid=xe",
-        "system", "oracle", \%connect_options )
+    my ( $host, $port, $sid ) = (
+        $config{connection}->{host},
+        $config{connection}->{port},
+        $config{connection}->{sid},
+    );
+
+    croak 'missing connection information'
+        unless exists $config{connection}
+        and $config{connection}->{host}, $config{connection}->{port}
+        and $config{connection}->{sid};
+
+    my $dbh = DBI->connect_cached( "dbi:Oracle:host=$host;port=$port;sid=$sid",
+        $ENV{STUFFDB_USER}, $ENV{STUFFDB_PASSWORD}, \%connect_options )
         or croak $DBI::errstr;
     return $dbh;
 }
 
 sub create_schemas {
-    my ( $self, $schemas_ref ) = @_;
-    my $dbh = $self->_db_connection();
+    my ( $self, %config ) = @_;
+    my $dbh         = $self->_db_connection(%config);
+    my $schemas_ref = $config{schemas};
     for my $schema ( @{$schemas_ref} ) {
         my $create_user_sql = qq{create user $schema identified externally};
         my $grant_tablespace_sql = qq{grant unlimited tablespace to $schema};
@@ -150,8 +162,7 @@ sub run {
     my $self   = shift;
     my %config = $self->_process_command_line();
     %config = $self->_read_config_from_file(%config);
-
-    $self->create_schemas( $config{schemas} );
+    $self->create_schemas(%config);
     $self->run_commands( $config{commands} );
 
     return 1;
