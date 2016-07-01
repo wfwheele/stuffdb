@@ -48,15 +48,35 @@ $mock_dbi->mock(
     }
 );
 
+my $conf_file = 'stuffdb.json';
+
 write_file(
-    'stuffdb.json',
+    $conf_file,
     encode_json(
         {   schemas => [ 'foo', 'bar' ],
-            commands => [ [ 'echo', 'woo' ], [ 'echo', 'foo' ] ]
+            commands => [ [ 'echo', 'woo' ], [ 'echo', 'foo' ] ],
+            connection => { host => 'foo', port => 1526, sid => 'xe' }
         }
     )
 );
 
+$ENV{STUFFDB_USER}     = 'foo';
+$ENV{STUFFDB_PASSWORD} = 'bar';
+
 lives_ok { $module->$method(); } 'expected to live';
+
+unlink $conf_file;
+
+write_file(
+    $conf_file,
+    encode_json(
+        { schemas => [ 'foo', 'bar' ], commands => [ 'echo woo', 'echo foo' ] }
+    )
+);
+
+throws_ok { $module->$method(); } qr/connection information/,
+    'dies when cannot find connection information';
+
+unlink $conf_file;
 
 done_testing;
