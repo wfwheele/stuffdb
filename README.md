@@ -27,6 +27,14 @@ For command line options: `stuffdb --help`
 
 Stuffdb will try to look for a stuffdb.json or stuffdb.yaml file if config is not specified in through the command line.
 
+### From Docker
+
+This utility has been pushed to the eas docker registry and can be used as a docker command.
+
+```
+docker run -v /stuffdb.json:/stuffdb/stuffdb.json toolbox.acsu.buffalo.edu:5000/stuffdb --help
+```
+
 ### Configuration
 
 the stuffdb conf file can take the following configration parameters
